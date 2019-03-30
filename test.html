@@ -1,9 +1,143 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Example</title>
-    </head>
-    <body>
-        <p>This is an example of a simple HTML page with one paragraph.</p>
-    </body>
+<head>
+  <meta charset="utf-8">
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2018 by SaraVieira (http://jsbin.com/zarakid/14/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width">
+  <title>NB-IoT Demo</title>
+
+<style id="jsbin-css">
+body {
+  background: #f5f5f5;
+}
+body h1 {
+  text-align: left;
+  font-family: arial;
+  color: #5a5a5a;
+}
+body ul {
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  flex-basis: 80%;
+}
+body ul li {
+  flex-basis: 20%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  align-items: center;
+}
+body ul li span {
+  font-family: arial;
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: center;
+}
+body ul li img {
+  margin: 5px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+</style>
+</head>
+<body>
+  <div id="Path"></div>
+    <div id="time"></div><br></br>
+  <div id="container" style="width:90%;">
+  </div>
+<script>
+//'use strict';
+
+
+function createNode(element) {
+  return document.createElement(element);
+}
+
+function append(parent, el) {
+  return parent.appendChild(el);
+}
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return("");
+}
+
+var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
+var path = getQueryVariable("path");
+var url = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmList.php?pageindex=1&pagesize=99';
+var ul = document.getElementById('authors');
+var table = document.createElement('table');
+    var tr = table.insertRow(-1);
+    tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
+    tr.cells.item(0).innerHTML = 'fmid';
+    tr.cells.item(1).innerHTML = 'fmname';
+    tr.cells.item(2).innerHTML = 'classid';
+    tr.cells.item(3).innerHTML = 'classname';
+    tr.cells.item(4).innerHTML = 'fmtype';
+    tr.cells.item(5).innerHTML = 'heat';
+    tr.cells.item(6).innerHTML = 'imgurl';
+    tr.cells.item(7).innerHTML = 'description';
+    tr.cells.item(8).innerHTML = 'isnew';
+
+function myrefresh() {
+document.getElementById('time').innerHTML = "Loading ...";
+fetch(url).then(function (resp) {
+  return resp.json();
+}).then(function (json) {
+    var len = json.data.length;
+    console.log(len);
+    for (var i = 0; i < len; i++) {
+        if (table.rows.length <= len) {
+            tr = table.insertRow(-1);
+            tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
+        }
+        //var jsonStatus = JSON.parse(data[i].Status);
+        tr = table.rows[i+1];
+        tr.cells.item(0).innerHTML = json.data[i].fmid;
+        tr.cells.item(1).innerHTML = json.data[i].fmname;
+        tr.cells.item(2).innerHTML = json.data[i].classid;
+        tr.cells.item(3).innerHTML = json.data[i].classname;
+        tr.cells.item(4).innerHTML = json.data[i].fmtype;
+        tr.cells.item(5).innerHTML = json.data[i].heat;
+        tr.cells.item(6).innerHTML = json.data[i].imgurl;
+        tr.cells.item(7).innerHTML = json.data[i].description;
+        tr.cells.item(8).innerHTML = json.data[i].isnew;
+    }
+    for (var i = len; i < table.rows.length; i++) {
+        if (table.rows.length > len+1) {
+            table.deleteRow(table.rows.length-1);
+        }
+    }
+})['catch'](function (error) {
+  console.log(JSON.stringify(error));
+});
+document.getElementById('time').innerHTML = new Date().toLocaleString();
+}
+var div = document.getElementById('container');
+            div.innerHTML = '';
+            div.appendChild(table);    // ADD THE TABLE TO THE WEB PAGE.
+document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
+myrefresh();
+//setInterval(myrefresh, 5000);
+</script>
+
+</body>
 </html>
