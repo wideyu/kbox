@@ -12,7 +12,7 @@ Released under the MIT license: http://jsbin.mit-license.org
 -->
 <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
-  <title>NB-IoT Demo</title>
+  <title>fmSongs</title>
 
 <style id="jsbin-css">
 body {
@@ -53,8 +53,12 @@ body ul li img {
 </style>
 </head>
 <body>
+<audio id="kbox" autoplay="autoplay" controls> 
+  Your browser does not support the <code>audio</code> element.
+</audio>
   <div id="Path"></div>
     <div id="time"></div><br></br>
+        <div id="player" style="display:none"></div>
   <div id="container" style="width:90%;">
   </div>
 <script>
@@ -82,27 +86,36 @@ function getQueryVariable(variable)
 
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 var path = getQueryVariable("path");
-var url = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmList.php?pageindex=1&pagesize=99';
+var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&offset=%7B%22offset%22%3A%20' + Date.now() + '%7D&size=20';
+var getSong = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash='
 var ul = document.getElementById('authors');
 var table = document.createElement('table');
     var tr = table.insertRow(-1);
     tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
-    tr.cells.item(0).innerHTML = 'fmid';
-    tr.cells.item(1).innerHTML = 'fmname';
-    tr.cells.item(2).innerHTML = 'classid';
-    tr.cells.item(3).innerHTML = 'classname';
-    tr.cells.item(4).innerHTML = 'fmtype';
-    tr.cells.item(5).innerHTML = 'heat';
-    tr.cells.item(6).innerHTML = 'imgurl';
-    tr.cells.item(7).innerHTML = 'description';
-    tr.cells.item(8).innerHTML = 'isnew';
+    tr.cells.item(0).innerHTML = 'sid';
+    tr.cells.item(1).innerHTML = 'name';
+    tr.cells.item(2).innerHTML = 'hash';
+    tr.cells.item(3).innerHTML = '320hash';
+    tr.cells.item(4).innerHTML = 'url';
+    //tr.cells.item(5).innerHTML = 'heat';
+    //tr.cells.item(6).innerHTML = 'imgurl';
+    //tr.cells.item(7).innerHTML = 'description';
+    //tr.cells.item(8).innerHTML = 'isnew';
 
-function myrefresh() {
-document.getElementById('time').innerHTML = "Loading ...";
-fetch(url).then(function (resp) {
+var div = document.getElementById('container');
+            div.innerHTML = '';
+            div.appendChild(table);    // ADD THE TABLE TO THE WEB PAGE.
+document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
+//setInterval(myrefresh, 5000);
+document.getElementById('time').innerHTML = new Date().toLocaleString();
+
+var songs = [];
+
+fetch(listUrl).then(function (resp) {
   return resp.json();
 }).then(function (json) {
-    var len = json.data.length;
+    var len = json.data[0].songs.length;
+    console.log(listUrl);
     console.log(len);
     for (var i = 0; i < len; i++) {
         if (table.rows.length <= len) {
@@ -111,32 +124,48 @@ fetch(url).then(function (resp) {
         }
         //var jsonStatus = JSON.parse(data[i].Status);
         tr = table.rows[i+1];
-        tr.cells.item(0).innerHTML = json.data[i].fmid;
-        tr.cells.item(1).innerHTML = json.data[i].fmname;
-        tr.cells.item(2).innerHTML = json.data[i].classid;
-        tr.cells.item(3).innerHTML = json.data[i].classname;
-        tr.cells.item(4).innerHTML = json.data[i].fmtype;
-        tr.cells.item(5).innerHTML = json.data[i].heat;
-        tr.cells.item(6).innerHTML = json.data[i].imgurl;
-        tr.cells.item(7).innerHTML = json.data[i].description;
-        tr.cells.item(8).innerHTML = json.data[i].isnew;
+        tr.cells.item(0).innerHTML = json.data[0].songs[i].sid;
+        tr.cells.item(1).innerHTML = json.data[0].songs[i].name;
+        tr.cells.item(2).innerHTML = json.data[0].songs[i].hash;
+        tr.cells.item(3).innerHTML = json.data[0].songs[i]['320hash'];
+        songs.push(json.data[0].songs[i].hash);
+        //tr.cells.item(4).innerHTML = songUrl.toString();
+        //tr.cells.item(5).innerHTML = json.data[i].heat;
+        //tr.cells.item(6).innerHTML = json.data[i].imgurl;
+        //tr.cells.item(7).innerHTML = json.data[i].description;
+        //tr.cells.item(8).innerHTML = json.data[i].isnew;
     }
+                    console.log(songs.length);
+    //for (var i = 0; i < songs.length; i++) {
+    i=7;
+                    console.log(songs[i]);
+        fetch(getSong + songs[i])
+            .then(function (resp) {
+                return resp.json();
+            })
+            .then(function(songJson) {
+                //console.log(songJson.url);
+                var src = songJson.url;
+                if (src.trim() != '') {
+                    //document.getElementById('kbox').innerHTML = "<audio id='kbox' src='" + songUrl + "' autoplay='autoplay' controls></audio>";
+                    document.getElementById('kbox').pause();
+                    document.getElementById('kbox').setAttribute("src", src);
+                    //console.log(document.getElementById('kbox').innerHTML);
+                    document.getElementById('kbox').load();
+                    //document.getElementById('kbox').play();
+                }
+            });
+        
     for (var i = len; i < table.rows.length; i++) {
         if (table.rows.length > len+1) {
             table.deleteRow(table.rows.length-1);
         }
     }
 })['catch'](function (error) {
-  console.log(JSON.stringify(error));
+  console.log(error);//JSON.stringify(error));
 });
-document.getElementById('time').innerHTML = new Date().toLocaleString();
-}
-var div = document.getElementById('container');
-            div.innerHTML = '';
-            div.appendChild(table);    // ADD THE TABLE TO THE WEB PAGE.
-document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
-myrefresh();
-//setInterval(myrefresh, 5000);
+
+                    console.log(songs.length);
 </script>
 
 </body>
