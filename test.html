@@ -5,14 +5,12 @@
 <!--
 Created using JS Bin
 http://jsbin.com
-
 Copyright (c) 2018 by SaraVieira (http://jsbin.com/zarakid/14/edit)
-
 Released under the MIT license: http://jsbin.mit-license.org
 -->
 <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
-  <title>fmSongs</title>
+  <title>kbox</title>
 
 <style id="jsbin-css">
 body {
@@ -49,30 +47,28 @@ body ul li img {
   border-radius: 3px;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
-
 </style>
 </head>
 <body>
-<audio id="kbox" autoplay="autoplay" controls> 
-  Your browser does not support the <code>audio</code> element.
+<iframe src="silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
+<audio id="kbox" controls> 
+  Your browser does not support the audio element.
 </audio>
   <div id="Path"></div>
     <div id="time"></div><br></br>
-        <div id="player" style="display:none"></div>
   <div id="container" style="width:90%;">
   </div>
+<script src="fetch.umd.js"></script>
+<script src="polyfill.min.js"></script>
+<script src="fetchPolyfill.js"></script>
 <script>
 //'use strict';
-
-
 function createNode(element) {
   return document.createElement(element);
 }
-
 function append(parent, el) {
   return parent.appendChild(el);
 }
-
 function getQueryVariable(variable)
 {
        var query = window.location.search.substring(1);
@@ -86,86 +82,109 @@ function getQueryVariable(variable)
 
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 var path = getQueryVariable("path");
-var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&offset=%7B%22offset%22%3A%20' + Date.now() + '%7D&size=20';
+var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&size=20&offset=';
 var getSong = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash='
 var ul = document.getElementById('authors');
 var table = document.createElement('table');
-    var tr = table.insertRow(-1);
-    tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
-    tr.cells.item(0).innerHTML = 'sid';
-    tr.cells.item(1).innerHTML = 'name';
-    tr.cells.item(2).innerHTML = 'hash';
-    tr.cells.item(3).innerHTML = '320hash';
-    tr.cells.item(4).innerHTML = 'url';
-    //tr.cells.item(5).innerHTML = 'heat';
-    //tr.cells.item(6).innerHTML = 'imgurl';
-    //tr.cells.item(7).innerHTML = 'description';
-    //tr.cells.item(8).innerHTML = 'isnew';
-
 var div = document.getElementById('container');
             div.innerHTML = '';
             div.appendChild(table);    // ADD THE TABLE TO THE WEB PAGE.
 document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
-//setInterval(myrefresh, 5000);
+
 document.getElementById('time').innerHTML = new Date().toLocaleString();
-
 var songs = [];
-
-fetch(listUrl).then(function (resp) {
+var offsets = '%7B%22offset%22%3A20%2C%22time%22%3A' + Date.now() + '%7D';
+fetch(listUrl+offsets).then(function (resp) {
   return resp.json();
 }).then(function (json) {
     var len = json.data[0].songs.length;
+    offsets = json.data[0].offset;
     console.log(listUrl);
-    console.log(len);
+    console.log(offsets);
     for (var i = 0; i < len; i++) {
-        if (table.rows.length <= len) {
-            tr = table.insertRow(-1);
-            tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
-        }
-        //var jsonStatus = JSON.parse(data[i].Status);
-        tr = table.rows[i+1];
-        tr.cells.item(0).innerHTML = json.data[0].songs[i].sid;
-        tr.cells.item(1).innerHTML = json.data[0].songs[i].name;
-        tr.cells.item(2).innerHTML = json.data[0].songs[i].hash;
-        tr.cells.item(3).innerHTML = json.data[0].songs[i]['320hash'];
-        songs.push(json.data[0].songs[i].hash);
-        //tr.cells.item(4).innerHTML = songUrl.toString();
-        //tr.cells.item(5).innerHTML = json.data[i].heat;
-        //tr.cells.item(6).innerHTML = json.data[i].imgurl;
-        //tr.cells.item(7).innerHTML = json.data[i].description;
-        //tr.cells.item(8).innerHTML = json.data[i].isnew;
-    }
-                    console.log(songs.length);
-    //for (var i = 0; i < songs.length; i++) {
-    i=7;
-                    console.log(songs[i]);
-        fetch(getSong + songs[i])
+        fetch(getSong + json.data[0].songs[i]['320hash'])
             .then(function (resp) {
                 return resp.json();
             })
             .then(function(songJson) {
-                //console.log(songJson.url);
                 var src = songJson.url;
-                if (src.trim() != '') {
-                    //document.getElementById('kbox').innerHTML = "<audio id='kbox' src='" + songUrl + "' autoplay='autoplay' controls></audio>";
-                    document.getElementById('kbox').pause();
-                    document.getElementById('kbox').setAttribute("src", src);
-                    //console.log(document.getElementById('kbox').innerHTML);
-                    document.getElementById('kbox').load();
-                    //document.getElementById('kbox').play();
-                }
+                if (src.trim() != '') songs.push({'src': src, 'name': songJson.fileName});
             });
-        
-    for (var i = len; i < table.rows.length; i++) {
-        if (table.rows.length > len+1) {
-            table.deleteRow(table.rows.length-1);
-        }
     }
 })['catch'](function (error) {
   console.log(error);//JSON.stringify(error));
 });
 
+setInterval(showSongs, 5000);
+function showSongs() {
+    console.log(table.rows.length);
+    console.log(songs.length);
+    if (table.rows.length >= songs.length) return;
+    for (var i = 0; i < songs.length; i++) {
+        if (table.rows.length <= songs.length) {
+            tr = table.insertRow(-1);
+            tr.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
+        }
+        tr = table.rows[i];
+        tr.cells.item(0).innerHTML = songs[i].name;
+    }
+    for (var i = songs.length; i < table.rows.length; i++) {
+        if (table.rows.length > songs.length) {
+            table.deleteRow(table.rows.length-1);
+        }
+    }
+}
+
+setTimeout(playStart, 1000);
+var index = 0;
+function playStart() {
                     console.log(songs.length);
+    if (songs.length == 0) {
+        setTimeout(playStart, 1000);
+        return;
+    }
+                    //document.getElementById('kbox').innerHTML = "<audio id='kbox' src='" + songUrl + "' autoplay='autoplay' controls></audio>";
+    kbox.setAttribute("src", songs[index].src);
+                    document.getElementById('kbox').setAttribute("autoplay", 'autoplay');
+                    //console.log(document.getElementById('kbox').innerHTML);
+                    document.getElementById('kbox').load();
+                    //document.getElementById('kbox').play();
+    document.getElementById('kbox').play();
+    document.getElementById('time').innerHTML = songs[index].name;
+    kbox.addEventListener("ended", function() {
+            playNextSongAuto()
+        }, true);
+fetch(listUrl+offsets).then(function (resp) {
+  return resp.json();
+}).then(function (json) {
+    var len = json.data[0].songs.length;
+    offsets = json.data[0].offset;
+    console.log(listUrl);
+    console.log(offsets);
+    for (var i = 0; i < len; i++) {
+        fetch(getSong + json.data[0].songs[i]['320hash'])
+            .then(function (resp) {
+                return resp.json();
+            })
+            .then(function(songJson) {
+                var src = songJson.url;
+                if (src.trim() != '') songs.push({'src': src, 'name': songJson.fileName});
+            });
+    }
+})['catch'](function (error) {
+  console.log(error);//JSON.stringify(error));
+});
+}
+
+function playNextSongAuto() {
+    index++;
+    if (index >= songs.length) index = 0;
+    kbox.setAttribute("src", songs[index].src);
+    kbox.load();
+    kbox.play();
+    document.getElementById('time').innerHTML = songs[index].name;
+}
+
 </script>
 
 </body>
