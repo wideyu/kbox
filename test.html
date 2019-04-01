@@ -10,7 +10,7 @@ Released under the MIT license: http://jsbin.mit-license.org
 -->
 <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
-  <title>kbox</title>
+  <title>kbox 1613</title>
 
 <style id="jsbin-css">
 body {
@@ -80,12 +80,15 @@ function getQueryVariable(variable)
        return("");
 }
 
-var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", "silence.mp3"); 
-  ifrm.setAttribute("allow", "autoplay"); 
-  ifrm.setAttribute("id", "audio");
-  ifrm.setAttribute("style", "display:none");
-  document.body.appendChild(ifrm);
+var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+  if(isChrome){
+    var ifrm = document.createElement("iframe");
+    ifrm.setAttribute("src", "silence.mp3"); 
+    ifrm.setAttribute("allow", "autoplay"); 
+    ifrm.setAttribute("id", "audio");
+    ifrm.setAttribute("style", "display:none");
+    document.body.appendChild(ifrm);
+  }
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 var path = getQueryVariable("path");
 var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&size=20&offset=';
