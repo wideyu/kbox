@@ -1,6 +1,9 @@
+import {fetch as fetchPolyfill} from 'whatwg-fetch';
+import {Promise as promisePolyfill} from 'promise-polyfill';
+
 if (!windows.fetch) {
-  console.log('noFetch');
+  windows.fetch = fetchPolyfill;
 }
 if (!windows.Promise) {
-  console.log('noPromise');
+  windows.Promise = promisePolyfill;
 }
