@@ -50,7 +50,7 @@ body ul li img {
 </style>
 </head>
 <body>
-<iframe src="silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
+
 <audio id="kbox" controls> 
   Your browser does not support the audio element.
 </audio>
@@ -80,6 +80,12 @@ function getQueryVariable(variable)
        return("");
 }
 
+var ifrm = document.createElement("iframe");
+  ifrm.setAttribute("src", "silence.mp3"); 
+  ifrm.setAttribute("allow", "autoplay"); 
+  ifrm.setAttribute("id", "audio");
+  ifrm.setAttribute("style", "display:none");
+  document.body.appendChild(ifrm);
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 var path = getQueryVariable("path");
 var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&size=20&offset=';
