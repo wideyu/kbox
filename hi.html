@@ -100,8 +100,6 @@ var offsets = '%7B%22offset%22%3A20%2C%22time%22%3A' + Date.now() + '%7D';
 
 setInterval(showSongs, 5000);
 function showSongs() {
-    console.log(table.rows.length);
-    console.log(songs.length);
     if (table.rows.length >= songs.length) return;
     for (var i = 0; i < songs.length; i++) {
         if (table.rows.length <= songs.length) {
