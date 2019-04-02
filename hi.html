@@ -2,16 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-<!--
-Created using JS Bin
-http://jsbin.com
-Copyright (c) 2018 by SaraVieira (http://jsbin.com/zarakid/14/edit)
-Released under the MIT license: http://jsbin.mit-license.org
--->
 <meta name="robots" content="noindex">
   <meta name="viewport" content="width=device-width">
   <title>kbox</title>
-
 <style id="jsbin-css">
 body {
   background: #f5f5f5;
@@ -48,9 +41,12 @@ body ul li img {
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 </style>
+<script>
+loadjs=function(){var a=function(){},c={},u={},f={};function o(e,n){if(e){var t=f[e];if(u[e]=n,t)for(;t.length;)t[0](e,n),t.splice(0,1)}}function l(e,n){e.call&&(e={success:e}),n.length?(e.error||a)(n):(e.success||a)(e)}function h(t,r,s,i){var c,o,e=document,n=s.async,u=(s.numRetries||0)+1,f=s.before||a,l=t.replace(/^(css|img)!/,"");i=i||0,/(^css!|\.css$)/.test(t)?((o=e.createElement("link")).rel="stylesheet",o.href=l,(c="hideFocus"in o)&&o.relList&&(c=0,o.rel="preload",o.as="style")):/(^img!|\.(png|gif|jpg|svg)$)/.test(t)?(o=e.createElement("img")).src=l:((o=e.createElement("script")).src=t,o.async=void 0===n||n),!(o.onload=o.onerror=o.onbeforeload=function(e){var n=e.type[0];if(c)try{o.sheet.cssText.length||(n="e")}catch(e){18!=e.code&&(n="e")}if("e"==n){if((i+=1)<u)return h(t,r,s,i)}else if("preload"==o.rel&&"style"==o.as)return o.rel="stylesheet";r(t,n,e.defaultPrevented)})!==f(t,o)&&e.head.appendChild(o)}function t(e,n,t){var r,s;if(n&&n.trim&&(r=n),s=(r?t:n)||{},r){if(r in c)throw"LoadJS";c[r]=!0}function i(n,t){!function(e,r,n){var t,s,i=(e=e.push?e:[e]).length,c=i,o=[];for(t=function(e,n,t){if("e"==n&&o.push(e),"b"==n){if(!t)return;o.push(e)}--i||r(o)},s=0;s<c;s++)h(e[s],t,n)}(e,function(e){l(s,e),n&&l({success:n,error:t},e),o(r,e)},s)}if(s.returnPromise)return new Promise(i);i()}return t.ready=function(e,n){return function(e,t){e=e.push?e:[e];var n,r,s,i=[],c=e.length,o=c;for(n=function(e,n){n.length&&i.push(e),--o||t(i)};c--;)r=e[c],(s=u[r])?n(r,s):(f[r]=f[r]||[]).push(n)}(e,function(e){l(n,e)}),t},t.done=function(e){o(e,[])},t.reset=function(){c={},u={},f={}},t.isDefined=function(e){return e in c},t}();
+</script>
 </head>
+
 <body>
-<iframe src="silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
 <audio id="kbox" controls> 
   Your browser does not support the audio element.
 </audio>
@@ -58,6 +54,7 @@ body ul li img {
     <div id="time"></div><br></br>
   <div id="container" style="width:90%;">
   </div>
+
 <script>
 //'use strict';
 function createNode(element) {
@@ -77,6 +74,15 @@ function getQueryVariable(variable)
        return("");
 }
 
+var isChrome = window.chrome && /Google Inc/.test(window.navigator.vendor); ///Chrome/.test(navigator.userAgent)
+if(isChrome){
+  var ifrm = document.createElement("iframe");
+  ifrm.setAttribute("src", "silence.mp3"); 
+  ifrm.setAttribute("allow", "autoplay"); 
+  ifrm.setAttribute("id", "audio");
+  ifrm.setAttribute("style", "display:none");
+  document.body.appendChild(ifrm);
+}
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 var path = getQueryVariable("path");
 var listUrl = 'https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/fmSongs.php?fmid=63&size=20&offset=';
@@ -91,26 +97,6 @@ document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
 document.getElementById('time').innerHTML = new Date().toLocaleString();
 var songs = [];
 var offsets = '%7B%22offset%22%3A20%2C%22time%22%3A' + Date.now() + '%7D';
-fetch(listUrl+offsets).then(function (resp) {
-  return resp.json();
-}).then(function (json) {
-    var len = json.data[0].songs.length;
-    offsets = json.data[0].offset;
-    console.log(listUrl);
-    console.log(offsets);
-    for (var i = 0; i < len; i++) {
-        fetch(getSong + json.data[0].songs[i]['320hash'])
-            .then(function (resp) {
-                return resp.json();
-            })
-            .then(function(songJson) {
-                var src = songJson.url;
-                if (src.trim() != '') songs.push({'src': src, 'name': songJson.fileName});
-            });
-    }
-})['catch'](function (error) {
-  console.log(error);//JSON.stringify(error));
-});
 
 setInterval(showSongs, 5000);
 function showSongs() {
@@ -130,6 +116,40 @@ function showSongs() {
             table.deleteRow(table.rows.length-1);
         }
     }
+}
+
+if (!window.fetch || !window.Promise) {
+  console.log('loadjs');
+  loadjs('fetchPromise.js', function() {
+    fetchSongs();
+  });
+} else {
+ fetchSongs();
+}
+
+function fetchSongs() {
+fetch(listUrl+offsets).then(function (resp) {
+  return resp.json();
+}).then(function (json) {
+    var len = json.data[0].songs.length;
+    offsets = json.data[0].offset;
+    console.log(listUrl);
+    console.log(offsets);
+    for (var i = 0; i < len; i++) {
+        fetch(getSong + json.data[0].songs[i]['320hash'])
+            .then(function (resp) {
+                return resp.json();
+            })
+            .then(function(songJson) {
+                var src = songJson.url;
+                if (src.trim() != '') {
+                 songs.push({'src': src, 'name': songJson.fileName});
+                }
+            });
+    }
+})['catch'](function (error) {
+  console.log(error);//JSON.stringify(error));
+});
 }
 
 setTimeout(playStart, 1000);
