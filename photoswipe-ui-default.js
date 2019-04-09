@@ -62,6 +62,9 @@ var PhotoSwipeUI_Default =
 				return true;
 			},
 
+            playEl: true,
+            nextEl: true,
+            
 			closeEl:true,
 			captionEl: true,
 			fullscreenEl: true,
@@ -422,9 +425,15 @@ var PhotoSwipeUI_Default =
 			name: 'button--play', 
 			option: 'playEl',
 			onTap: function() {
-				console.log('playTap');
 				kbox.load();
 				kbox.play();
+			} 
+		},
+		{ 
+			name: 'button--next', 
+			option: 'nextEl',
+			onTap: function() {
+				playNextSongAuto();
 			} 
 		},
 		{ 
