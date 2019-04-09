@@ -480,3 +480,14 @@ a.pswp__share--download:hover {
 
 .pswp--minimal--dark .pswp__top-bar {
   background: none; }
+
+
+/* kbox */
+.pswp__button--play {
+  background-position: -176px 0; }
+
+.pswp__button--pause {
+  background-position: -220px 0; }
+
+.pswp__button--next {
+  background-position: -176px -44px; }
