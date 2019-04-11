@@ -124,7 +124,7 @@ var options = {
 // Initializes and opens PhotoSwipe
 var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
 gallery.init();
-setInterval(function(){gallery.ui.nextIfHidden();},10000);
+setInterval(function(){gallery.ui.nextIfHidden();},20000);
 
 var isChrome = window.chrome && /Google Inc/.test(window.navigator.vendor); ///Chrome/.test(navigator.userAgent)
 if(isChrome){
