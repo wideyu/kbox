@@ -24,13 +24,7 @@
 
 <body style="padding:0px; margin:0px; background-color:#fff;font-family:arial,helvetica,sans-serif,verdana,'Open Sans'">
 
-<audio id="kbox" controls> 
-  Your browser does not support the audio element.
-</audio>
-  <div id="Path"></div>
-    <div id="time"></div>
-  <div id="container" style="width:90%;">
-  </div>
+<audio id="kbox" controls> &#9835&nbspkbox </audio>
 
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -148,15 +142,6 @@ if(isChrome){
   document.body.appendChild(ifrm);
 }
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
-var path = getQueryVariable("path");
-var ul = document.getElementById('authors');
-var table = document.createElement('table');
-var div = document.getElementById('container');
-            div.innerHTML = '';
-            div.appendChild(table);    // ADD THE TABLE TO THE WEB PAGE.
-document.getElementById('Path').innerHTML = '<h1>'+path+'</h1>';
-
-document.getElementById('time').innerHTML = new Date().toLocaleString();
 
 var songs = [];
 if (!window.fetch || !window.Promise) {
