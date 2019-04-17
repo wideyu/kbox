@@ -124,16 +124,16 @@ var options = {
 // Initializes and opens PhotoSwipe
 var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
 gallery.listen('imageLoadComplete', function (index, item) {
-	let img = new Image()
-	img.onload = () => {
+	var img = new Image();
+	img.onload = function() {
 		if (item.w != img.width || item.h != img.height) {
-			item.w = img.width
-			item.h = img.height
-			gallery.invalidateCurrItems()
-			gallery.updateSize(true)
+			item.w = img.width;
+			item.h = img.height;
+			gallery.invalidateCurrItems();
+			gallery.updateSize(true);
 		}
 	}
-	img.src = item.src
+	img.src = item.src;
 });
 gallery.init();
 setInterval(function(){gallery.ui.nextIfHidden();},20000);
