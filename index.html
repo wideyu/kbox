@@ -147,6 +147,7 @@ if(isChrome){
 }
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 
+var kbox = document.getElementById('kbox');
 var songs = [];
 if (!window.fetch || !window.Promise) {
 	loadjs('fetchPromise.js', {
