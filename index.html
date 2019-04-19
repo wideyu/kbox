@@ -117,20 +117,20 @@ var options = {
 var gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
 //gallery.listen('imageLoadComplete', function (index, item) {
 //});
-gallery.listen('beforeChange', function() {
+gallery.listen('afterChange', function() {
 	gallery.ui.setShareTitle(gallery.currItem.tags);
 	if (gallery.currItem.resize) {
-	var img = new Image();
-	img.onload = function() {
-		if (gallery.currItem.w != img.width || gallery.currItem.h != img.height) {
-			gallery.currItem.w = img.width;
-			gallery.currItem.h = img.height;
-			gallery.invalidateCurrItems();
-			gallery.updateSize(true);
+		var img = new Image();
+		img.onload = function() {
+			if (gallery.currItem.w != img.width || gallery.currItem.h != img.height) {
+				gallery.currItem.w = img.width;
+				gallery.currItem.h = img.height;
+				gallery.invalidateCurrItems();
+				gallery.updateSize(true);
+			}
+			gallery.currItem.resize = false;
 		}
-		gallery.currItem.resize = false;
-	}
-	img.src = gallery.currItem.src;
+		img.src = gallery.currItem.src;
 	}
 });
 gallery.init();
