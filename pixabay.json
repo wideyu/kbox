@@ -31,7 +31,7 @@
               
               <span class="cf-error-type">Error</span>
               <span class="cf-error-code">502</span>
-              <small class="heading-ray-id">Ray ID: 4f75dfa8db9e98c3 &bull; 2019-07-16 18:00:05 UTC</small>
+              <small class="heading-ray-id">Ray ID: 4f7637f5ac6753b2 &bull; 2019-07-16 19:00:22 UTC</small>
             </h1>
             <h2 class="cf-subheadline">Bad gateway</h2>
         </div><!-- /.error-overview -->
@@ -92,7 +92,7 @@
 
         <div class="cf-error-footer cf-wrapper">
   <p>
-    <span class="cf-footer-item">Cloudflare Ray ID: <strong>4f75dfa8db9e98c3</strong></span>
+    <span class="cf-footer-item">Cloudflare Ray ID: <strong>4f7637f5ac6753b2</strong></span>
     <span class="cf-footer-separator">&bull;</span>
     <span class="cf-footer-item"><span>Your IP</span>: 183.14.19.46</span>
     <span class="cf-footer-separator">&bull;</span>
