@@ -181,14 +181,6 @@ gallery.init();
 setInterval(function(){gallery.ui.nextIfHidden();},30000);
 
 var isChrome = window.chrome && /Google Inc/.test(window.navigator.vendor); ///Chrome/.test(navigator.userAgent)
-if(isChrome){
-  var ifrm = document.createElement("iframe");
-  ifrm.setAttribute("src", "silence.mp3"); 
-  ifrm.setAttribute("allow", "autoplay"); 
-  ifrm.setAttribute("id", "audio");
-  ifrm.setAttribute("style", "display:none");
-  document.body.appendChild(ifrm);
-}
 var lang = getQueryVariable("lang") || navigator.language || navigator.userLanguage; 
 
 var kbox = document.getElementById('kbox');
