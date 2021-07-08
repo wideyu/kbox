@@ -1,0 +1,12 @@
+name: kboxjson
+
+on: [push]
+
+jobs:
+  runMultipleCommands:
+    runs-on: ubuntu-latest
+    steps:
+     - run: |
+        echo "A initial message"
+        echo "Another message or command"
+     - run: echo "One last message"
