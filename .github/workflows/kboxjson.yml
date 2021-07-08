@@ -32,5 +32,17 @@ jobs:
         fi
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
         if [ $? -eq 0 ]; then
-          cat pixabay.json
+          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/pixabay.json" | grep '"sha"')
+          echo '{' > upload.txt
+          if [ "$sha" != "" ] ; then
+            echo "$sha" >> upload.txt
+          fi
+          sed -i 's|\"largeImageURL"|\"_largeImageURL"|g' pixabay.json
+          sed -i 's|\"previewURL"|\"largeImageURL"|g' pixabay.json
+          sed -i 's|\_150.jpg|\_960_720.jpg|g' pixabay.json
+          content=$(base64 pixabay.json)
+          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
+          echo '  "content": "'"$content"'"' >> upload.txt
+          echo '}' >> upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/pixabay.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
