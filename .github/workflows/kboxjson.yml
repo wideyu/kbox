@@ -18,7 +18,7 @@ jobs:
         FIRST_NAME: Mona
         MIDDLE_NAME: The
         LAST_NAME: Octocat
-        TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        TOKEN: ${{ secrets.TOKEN }}
       run: |
-        echo "MY_VAR FIRST_NAME MIDDLE_NAME LAST_NAME."
+        echo "$TOKEN MY_VAR FIRST_NAME MIDDLE_NAME LAST_NAME."
         echo "$TOKEN"
