@@ -30,3 +30,7 @@ jobs:
           cat upload.txt
           curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/bing.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
+        curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
+        if [ $? -eq 0 ]; then
+          cat pixabay.json
+        fi
