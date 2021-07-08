@@ -23,5 +23,13 @@ jobs:
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         if [ $? -eq 0 ]; then
           sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/bing.json" | grep '"sha"')
-          echo $sha
+          echo '{' > upload.txt
+          if [ "$sha" != "" ] ; then
+             echo "$sha" >> upload.txt
+          fi
+          content=$(base64 bing.json)
+          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
+          echo '  "content": "'"$content"'"' >> upload.txt
+          echo '}' >> /tmp/upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/bing.json -H "Authorization: token c44fd167575d7730cf8a460c9c992a2a4c560a8a" -d @/tmp/upload.txt
         fi
