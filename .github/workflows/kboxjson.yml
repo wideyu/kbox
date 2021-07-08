@@ -21,4 +21,6 @@ jobs:
         TOKEN: ${{ secrets.TOKEN }}
       run: |
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
-        cat bing.json
+        if [ $? -eq 0 ]; then
+          cat bing.json
+        fi
