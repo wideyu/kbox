@@ -22,5 +22,6 @@ jobs:
       run: |
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         if [ $? -eq 0 ]; then
-          cat bing.json
+          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/bing.json" | grep '"sha"')
+          echo $sha
         fi
