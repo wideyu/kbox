@@ -10,3 +10,5 @@ jobs:
         echo "A initial message $TOKEN"
         echo "Another message or command"
      - run: echo "One last message"
+     - env:
+        TOKEN: ${{ secrets.TOKEN }}
