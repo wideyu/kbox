@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name test
+       env: 
+         TOKEN: ${{ secrets.TOKEN }}
        run: |
         echo "A initial message $TOKEN"
         echo "Another message or command"
        run: echo "One last message"
-       env:
-        TOKEN: ${{ secrets.TOKEN }}
