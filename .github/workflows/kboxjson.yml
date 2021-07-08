@@ -31,5 +31,6 @@ jobs:
           echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
           echo '  "content": "'"$content"'"' >> upload.txt
           echo '}' >> upload.txt
-          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/bing.json -H "Authorization: token c44fd167575d7730cf8a460c9c992a2a4c560a8a" -d @upload.txt
+          cat upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/bing.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
