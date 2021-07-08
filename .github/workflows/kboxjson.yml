@@ -61,3 +61,26 @@ jobs:
           echo '}' >> upload.txt
           curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
+        curl -k -o unsplash.json "${{ secrets.UNSPLASH }}1"
+        if [ $? -eq 0 ]; then
+          for p in 2 3 4 5 6 ; do
+            curl -k -o unsplash_tmp.json "${{ secrets.UNSPLASH }}$p"
+            if [ $? -eq 0 ]; then
+              json=$(cat unsplash.json)
+              json=${json%*\]}
+              tmp=$(cat unsplash_tmp.json)
+              tmp=${tmp#*\[}
+              echo "$json,$tmp" > unsplash.json
+            fi
+          done
+          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/unsplash.json" | grep '"sha"')
+          echo '{' > upload.txt
+          if [ "$sha" != "" ] ; then
+            echo "$sha" >> upload.txt
+          fi
+          content=$(base64 unsplash.json)
+          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
+          echo '  "content": "'"$content"'"' >> upload.txt
+          echo '}' >> upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/unsplash.json -H "Authorization: token $TOKEN" -d @upload.txt
+        fi
