@@ -46,3 +46,18 @@ jobs:
           echo '}' >> upload.txt
           curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/pixabay.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
+        curl -k -o vladstudio.json "${{ secrets.VLADSTUDIO }}"
+        if [ $? -eq 0 ]; then
+          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json" | grep '"sha"')
+          echo '{' > upload.txt
+          if [ "$sha" != "" ] ; then
+          	echo "$sha" >> upload.txt
+          fi
+          sed -i 's|api\\\/v3\\\/download?client=XxpeqTUZcEKWJKEhJWcb8aqh&filename|fullscreen-preview\\\/?f|g' vladstudio.json
+          sed -i 's|\&size=1024x768|\&w=2048\&h=2048|g' vladstudio.json
+          content=$(base64 vladstudio.json)
+          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
+          echo '  "content": "'"$content"'"' >> upload.txt
+          echo '}' >> upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json -H "Authorization: token $TOKEN" -d @upload.txt
+        fi
