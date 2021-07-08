@@ -6,9 +6,10 @@ jobs:
   runMultipleCommands:
     runs-on: ubuntu-latest
     steps:
-     - run: |
+     - name test
+       run: |
         echo "A initial message $TOKEN"
         echo "Another message or command"
-     - run: echo "One last message"
-     - env:
+       run: echo "One last message"
+       env:
         TOKEN: ${{ secrets.TOKEN }}
