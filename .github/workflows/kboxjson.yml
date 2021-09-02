@@ -56,8 +56,8 @@ jobs:
           if [ "$sha" != "" ] ; then
           	echo "$sha" >> upload.txt
           fi
-          sed -i 's|api\\\/v3\\\/download?client=XxpeqTUZcEKWJKEhJWcb8aqh&filename|fullscreen-preview\\\/?f|g' vladstudio.json
-          sed -i 's|\&size=1024x768|\&w=2048\&h=2048|g' vladstudio.json
+          sed -i 's|api\\\/v3\\\/download?client=XxpeqTUZcEKWJKEhJWcb8aqh&filename|ajax-download-wallpaper-image\\\/?filename|g' vladstudio.json
+          sed -i 's|\&size=1024x768|\&size=1600\&h=1200|g' vladstudio.json
           content=$(base64 vladstudio.json)
           echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
           echo '  "content": "'"$content"'"' >> upload.txt
