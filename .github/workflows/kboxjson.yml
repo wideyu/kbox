@@ -49,7 +49,7 @@ jobs:
           echo '}' >> upload.txt
           curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/pixabay.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
-        curl -k -o vladstudio.json "${{ secrets.VLADSTUDIO }}"
+        curl -k -o vladstudio.json "https://vlad.studio/api/v3/art/?client=${{ secrets.VLADSTUDIO }}&format=json&has_wall=1&limit=600"
         if [ $? -eq 0 ]; then
           sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json" | grep '"sha"')
           echo '{' > upload.txt
