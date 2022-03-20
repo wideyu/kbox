@@ -27,8 +27,10 @@ jobs:
         URLLIST: ${{ secrets.URLLIST }}
         
       run: |
+        mkdir fmlist
+        mv ./fmlist1.json ./fmlist/1.json
         p=1;
-        curl -k -o "fmlist$p.json" "$URLLIST$p"
+        curl -k -o "./fmlist/$p.json" "$URLLIST$p"
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
