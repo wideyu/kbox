@@ -28,7 +28,6 @@ jobs:
         
       run: |
         mkdir fmlist
-        mv ./fmlist1.json ./fmlist/1.json
         p=1;
         curl -k -o "./fmlist/$p.json" "$URLLIST$p"
         
