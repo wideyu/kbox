@@ -22,7 +22,7 @@ jobs:
 
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        URLLIST: ${{ screts.URLLIST }}
+        URLLIST: ${{ secrets.URLLIST }}
         
       run: |
         p=1;
