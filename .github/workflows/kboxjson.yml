@@ -3,6 +3,7 @@ on:
   push:
   schedule:
     - cron: '0 21 * * *'
+  workflow_dispatch:
     
 jobs:
 
@@ -12,13 +13,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages    
+    
     steps:
 
     - name: Print a greeting
 
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        URLLIST: ${{ screts.URLLIST }}
+        
       run: |
+        p=1;
+        curl -k -o "fmlist$p.json" "$URLLIST$p"
+        
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         if [ $? -eq 0 ]; then
           sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/bing.json" | grep '"sha"')
