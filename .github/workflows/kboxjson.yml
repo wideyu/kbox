@@ -31,49 +31,16 @@ jobs:
         curl -k -o "fmlist$p.json" "$URLLIST$p"
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
-        if [ $? -eq 0 ]; then
-          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/bing.json" | grep '"sha"')
-          echo '{' > upload.txt
-          if [ "$sha" != "" ] ; then
-             echo "$sha" >> upload.txt
-          fi
-          content=$(base64 bing.json)
-          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
-          echo '  "content": "'"$content"'"' >> upload.txt
-          echo '}' >> upload.txt
-          cat upload.txt
-          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/bing.json -H "Authorization: token $TOKEN" -d @upload.txt
-        fi
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
         if [ $? -eq 0 ]; then
-          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/pixabay.json" | grep '"sha"')
-          echo '{' > upload.txt
-          if [ "$sha" != "" ] ; then
-            echo "$sha" >> upload.txt
-          fi
           sed -i 's|\"largeImageURL"|\"_largeImageURL"|g' pixabay.json
           sed -i 's|\"previewURL"|\"largeImageURL"|g' pixabay.json
           sed -i 's|\_150.jpg|\_960_720.jpg|g' pixabay.json
-          content=$(base64 pixabay.json)
-          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
-          echo '  "content": "'"$content"'"' >> upload.txt
-          echo '}' >> upload.txt
-          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/pixabay.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
         curl -k -o vladstudio.json "https://vlad.studio/api/v3/art/?client=${{ secrets.VLADSTUDIO }}&format=json&has_wall=1&limit=600"
         if [ $? -eq 0 ]; then
-          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json" | grep '"sha"')
-          echo '{' > upload.txt
-          if [ "$sha" != "" ] ; then
-          	echo "$sha" >> upload.txt
-          fi
           sed -i 's|api\\\/v3\\\/download?client=.\{24\}&filename|ajax-download-wallpaper-image\\\/?filename|g' vladstudio.json
           sed -i 's|\&size=1600x1200|\&size=1920x1080|g' vladstudio.json
-          content=$(base64 vladstudio.json)
-          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
-          echo '  "content": "'"$content"'"' >> upload.txt
-          echo '}' >> upload.txt
-          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/vladstudio.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
         curl -k -o unsplash.json "${{ secrets.UNSPLASH }}1"
         if [ $? -eq 0 ]; then
@@ -87,16 +54,6 @@ jobs:
               echo "$json,$tmp" > unsplash.json
             fi
           done
-          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/unsplash.json" | grep '"sha"')
-          echo '{' > upload.txt
-          if [ "$sha" != "" ] ; then
-            echo "$sha" >> upload.txt
-          fi
-          content=$(base64 unsplash.json)
-          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
-          echo '  "content": "'"$content"'"' >> upload.txt
-          echo '}' >> upload.txt
-          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/unsplash.json -H "Authorization: token $TOKEN" -d @upload.txt
         fi
 
     - name: Cleanup
