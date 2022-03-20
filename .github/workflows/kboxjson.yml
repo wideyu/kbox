@@ -27,6 +27,19 @@ jobs:
       run: |
         p=1;
         curl -k -o "fmlist$p.json" "$URLLIST$p"
+        if [ $? -eq 0 ]; then
+          sha=$(curl -k "https://api.github.com/repos/wideyu/kbox/contents/fmlist$p.json" | grep '"sha"')
+          echo '{' > upload.txt
+          if [ "$sha" != "" ] ; then
+             echo "$sha" >> upload.txt
+          fi
+          content=$(base64 "fmlist$p.json")
+          echo '  "message": "curlGithub '"$(date +%m%d%H%M)"'",' >> upload.txt
+          echo '  "content": "'"$content"'"' >> upload.txt
+          echo '}' >> upload.txt
+          cat upload.txt
+          curl -k -X PUT https://api.github.com/repos/wideyu/kbox/contents/fmlist$p.json -H "Authorization: token $TOKEN" -d @upload.txt
+        fi
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         if [ $? -eq 0 ]; then
