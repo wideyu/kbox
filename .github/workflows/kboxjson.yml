@@ -30,13 +30,74 @@ jobs:
         [ -d fmlist ] || mkdir fmlist
         pagesize=1
         pageindex=1
+        urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex";
+        jsonlist=$(curl -s "$urllist")
+        [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
+        echo "$urllist"
+        echo "$jsonlist"
         main="def main():
           import sys, json
           print(json.load(sys.stdin)['recordcount'])"
         py=$(echo -e "$main\nmain()")
         echo "$py"
-        pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "$py")
+        pagesize=$(echo "$jsonlist" | python3 -c "$py")
+
+        [ -d fmsongs ] || mkdir fmsongs
         echo $pagesize
+        urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex";
+        jsonlist=$(curl -s "$urllist")
+        [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
+        #-o "fmlist/$pageindex.json" 
+        main="def main():
+          import sys, json
+          fmlist=json.load(sys.stdin)
+          for fm in fmlist['data']:
+            print(fm['fmid'])"
+        py=$(echo -e "$main\nmain()")
+        echo "$jsonlist"
+        echo "$py"
+        for fmid in $(echo "$jsonlist" | python3 -c "$py")
+        do
+          echo "$fmid"
+          for pageindex in {1..3}
+          do
+            if [ -z $"offset" ]; then
+              urlsongs="$URLMK/fmSongs.php?size=20&fmid=$fmid"
+            else
+              urlsongs="$URLMK/fmSongs.php?size=20&fmid=$fmid&offset=$offset"
+            fi
+            jsonsongs=$(curl -s "$urlsongs")
+            [[ $jsonsongs == \"* ]] && jsonsongs=$(eval echo "$jsonsongs")
+            main="def main():
+              import sys, json
+              fmsongs=json.load(sys.stdin)
+              if fmsongs['data'][0]['songs'] is None:
+                print("0")
+              else:
+                print(len(fmsongs['data'][0]['songs']))"
+            py=$(echo -e "$main\nmain()")
+            lensongs=$(echo "$jsonsongs" | python3 -c "$py")
+            echo "$lensongs"
+            if [ "$lensongs" -eq "0" ]; then
+              [ -d "fmsongs/$fmid" ] && rm -rf "fmsongs/$fmid"
+            else
+              [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
+              filesongs="fmsongs/$fmid/$pageindex.json"
+              echo $jsonsongs > "$filesongs"
+            fi
+            #   \n print(song['name'])"
+            #echo "$fsongs"
+            
+            main="def main():
+              import sys, json
+              fmsongs=json.load(sys.stdin)
+              print(fmsongs['data'][0]['offset'])"
+            py=$(echo -e "$main\nmain()")
+            offset=$(echo "$jsonsongs" | python3 -c "$py")
+            #offset=$(grep -o 'offset[^,]*\",' "$fsongs" |grep -o '%7B.*%7D')
+            echo "$offset"
+          done
+        done
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
