@@ -32,10 +32,10 @@ jobs:
         pageindex=1
         pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "import sys, json; print(json.load(sys.stdin)['recordcount'])")
         curl -o "fmlist/$pageindex.json" "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex"
-        py="import sys, json;\nfmlist=json.load(open('fmlist/1.json'))\nfor fm in fmlist['data']:\n print(fm['fmid'])"
+        py="import sys, json\nfmlist=json.load(open('./fmlist/1.json'))\nfor fm in fmlist['data']:\n print(fm['fmid'])\n"
         [ -d fmsongs ] || mkdir fmsongs
         pageindex=1
-        for fmid in $(echo "$py" | python3 -)
+        for fmid in $(echo "$py" | python3)
         do
           [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
           curl -o "fmsongs/$fmid/$pageindex.json" "$URLMK/fmSongs.php?size=20&fmid=$fmid"
