@@ -105,7 +105,7 @@ jobs:
                 fi
                 jsonhash=$(curl -s "$urlhash$hash")
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
-                if echo "$jsonhash" grep -q '"error":""'; then
+                if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
                 fi
               done
