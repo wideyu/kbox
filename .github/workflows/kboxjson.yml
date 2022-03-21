@@ -27,6 +27,7 @@ jobs:
         URLMK: ${{ secrets.URLMK }}
         
       run: |
+        UA='Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12A365 MicroMessenger/6.0 NetType/WIFI';
         [ -d fmlist ] || mkdir fmlist
         [ -d fmsongs ] || mkdir fmsongs
         [ -d songinfo ] || mkdir songinfo
@@ -107,7 +108,7 @@ jobs:
                     rm -f "$filehash"
                   fi
                 fi
-                jsonhash=$(curl -v "$urlhash$hash" --socks5 116.24.103.44:51080)
+                jsonhash=$(curl -v "$urlhash$hash" -A "$UA" --socks5 116.24.103.44:51080)
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
