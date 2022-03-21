@@ -24,14 +24,27 @@ jobs:
 
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        URLLIST: ${{ secrets.URLLIST }}
+        URLMK: ${{ secrets.URLMK }}
         
       run: |
         [ -d fmlist ] || mkdir fmlist
-        pagesize=1;
-        pageindex=1;
-        pagesize=$(curl -s "$URLLIST?pagesize=$pagesize&pageindex=$pageindex" |curl -s http://kbox.cn/fmlist/1.json | python3 -c "import sys, json; print(json.load(sys.stdin)['recordcount'])")
-        curl -s -o "./fmlist/$pageindex.json" "$URLLIST?pagesize=$pagesize&pageindex=$pageindex"
+        pagesize=1
+        pageindex=1
+        pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "import sys, json; print(json.load(sys.stdin)['recordcount'])")
+        curl -o "fmlist/$pageindex.json" "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex"
+        py=$(cat <<EOF) 
+import json
+fmlist=json.load(open('./fmlist/1.json'))
+for fm in fmlist['data']:
+  print(fm['fmid'])
+EOF
+        [ -d fmsongs ] || mkdir fmsongs
+        pageindex=1
+        for fmid in $(python3 -c "$py")
+        do
+          [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
+          curl -o "fmsongs/$fmid/$pageindex.json" "$URLMK/fmSongs.php?size=20&fmid=$fmid"
+        done        
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
