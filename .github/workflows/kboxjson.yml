@@ -81,7 +81,7 @@ jobs:
                 print(len(fmsongs['data'][0]['songs']))"
             py=$(echo -e "$main\nmain()")
             lensongs=$(echo "$jsonsongs" | python3 -c "$py")
-            #echo "$lensongs"
+            echo "$lensongs"
             if [ "$lensongs" -eq "0" ]; then
               [ -d "fmsongs/$fmid" ] && rm -rf "fmsongs/$fmid"
             else
