@@ -57,8 +57,10 @@ jobs:
         py=$(echo -e "$main\nmain()")
         echo "$jsonlist"
         echo "$py"
+        loop="YES"
         for fmid in $(echo "$jsonlist" | python3 -c "$py")
         do
+          [ -z loop ] && break
           echo "$fmid"
           for pageindex in {1..3}
           do
@@ -109,6 +111,9 @@ jobs:
                   echo $jsonhash > "$filehash"
                 else
                   echo "$jsonhash"
+                fi
+                if echo "$jsonhash" | grep -q '"error":"您操作太频繁了，请稍后再试"'; then
+                  loop=""
                 fi
                 sleep 10
               done
