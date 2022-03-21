@@ -27,7 +27,7 @@ jobs:
         URLLIST: ${{ secrets.URLLIST }}
         
       run: |
-        mkdir fmlist
+        [ -d fmlist ] || mkdir fmlist
         p=1;
         curl -k -o "./fmlist/$p.json" "$URLLIST$p"
         
