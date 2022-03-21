@@ -64,6 +64,7 @@ jobs:
           echo "$fmid"
           for pageindex in {1..3}
           do
+            [ -z loop ] && break
             if [ -z $"offset" ]; then
               urlsongs="$URLMK/fmSongs.php?size=20&fmid=$fmid"
             else
@@ -97,6 +98,7 @@ jobs:
               urlhash="$URLMK/getSongInfo.php?cmd=playInfo&hash="
               for hash in $(echo "$jsonsongs" | python3 -c "$py")
               do
+                [ -z loop ] && break
                 filehash="songinfo/$hash.json"
                 if [ -f "$filehash" ]; then
                   if grep -q '"error":""' "$filehash"; then
@@ -114,7 +116,7 @@ jobs:
                 fi
                 if echo "$jsonhash" | grep -q '"error":"您操作太频繁了，请稍后再试"'; then
                   loop=""
-                  echo QUIT
+                  echo "QUIT"
                 fi
                 sleep 10
               done
