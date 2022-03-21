@@ -28,8 +28,10 @@ jobs:
         
       run: |
         [ -d fmlist ] || mkdir fmlist
-        p=1;
-        curl -k -o "./fmlist/$p.json" "$URLLIST$p"
+        pagesize=1;
+        pageindex=1;
+        pagesize = $(curl -s "$URLLIST?pagesize=$pagesize&pageindex=$pageindex" |curl -s http://kbox.cn/fmlist/1.json | python3 -c "import sys, json; print(json.load(sys.stdin)['recordcount'])")
+        curl -s -o "./fmlist/$pageindex.json" "$URLLIST?pagesize=$pagesize&pageindex=$pageindex"
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
