@@ -36,7 +36,7 @@ jobs:
         jsonlist=$(curl -s "$urllist")
         [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
         echo "$urllist"
-        echo "$jsonlist"
+        #echo "$jsonlist"
         main="def main():
           import sys, json
           print(json.load(sys.stdin)['recordcount'])"
@@ -55,7 +55,7 @@ jobs:
           for fm in fmlist['data']:
             print(fm['fmid'])"
         py=$(echo -e "$main\nmain()")
-        echo "$jsonlist"
+        #echo "$jsonlist"
         echo "$py"
         loop="YES"
         for fmid in $(echo "$jsonlist" | python3 -c "$py")
