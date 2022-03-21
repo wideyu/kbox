@@ -114,6 +114,7 @@ jobs:
                 fi
                 if echo "$jsonhash" | grep -q '"error":"您操作太频繁了，请稍后再试"'; then
                   loop=""
+                  echo QUIT
                 fi
                 sleep 10
               done
