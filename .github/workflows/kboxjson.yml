@@ -35,6 +35,7 @@ jobs:
         py="import sys, json\nfmlist=json.load(open('./fmlist/1.json'))\nfor fm in fmlist['data']:\n print(fm['fmid'])"
         [ -d fmsongs ] || mkdir fmsongs
         pageindex=1
+        echo "$py"
         for fmid in $(echo "$py" | python3)
         do
           [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
