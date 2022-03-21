@@ -34,6 +34,7 @@ jobs:
         import sys, json
         print(json.load(sys.stdin)['recordcount'])"
         py=$(echo -e "$main\nmain()")
+        echo "$py"
         pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "$py")
         echo $pagesize
         
