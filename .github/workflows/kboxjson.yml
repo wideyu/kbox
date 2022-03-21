@@ -30,27 +30,12 @@ jobs:
         [ -d fmlist ] || mkdir fmlist
         pagesize=1
         pageindex=1
-        pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "import sys, json; print(json.load(sys.stdin)['recordcount'])")
-        curl -o "fmlist/$pageindex.json" "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex"
-        py="import json\nfmlist=json.load(open('./fmlist/1.json'))\nfor fm in fmlist['data']:\n print(fm['fmid'])"
-        echo -e "$py"
-        [ -d fmsongs ] || mkdir fmsongs
-        for fmid in $(echo -e "$py" | python3 -)
-        do
-          offset=""
-          for pageindex in {1..3}
-          do
-            [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
-            if [ -z $"offset" ]
-            then
-              curl -o "fmsongs/$fmid/$pageindex.json" "$URLMK/fmSongs.php?size=20&fmid=$fmid"
-            else
-              curl -o "fmsongs/$fmid/$pageindex.json" "$URLMK/fmSongs.php?size=20&fmid=$fmid&offset=$offset"
-            fi
-            offset=$(grep -o 'offset[^,]*\",' fmsongs/$fmid/$pageindex.json |grep -o '%7B.*%7D')
-            echo "$offset"
-          done
-        done
+        main="def main():
+        import sys, json
+        print(json.load(sys.stdin)['recordcount'])"
+        py=$(echo -e "$main\nmain()")
+        pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "$py")
+        echo $pagesize
         
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
