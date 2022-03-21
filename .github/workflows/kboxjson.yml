@@ -31,8 +31,8 @@ jobs:
         pagesize=1
         pageindex=1
         main="def main():
-        import sys, json
-        print(json.load(sys.stdin)['recordcount'])"
+          import sys, json
+          print(json.load(sys.stdin)['recordcount'])"
         py=$(echo -e "$main\nmain()")
         echo "$py"
         pagesize=$(curl "$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex" | python3 -c "$py")
