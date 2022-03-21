@@ -110,6 +110,7 @@ jobs:
                 else
                   echo "$jsonhash"
                 fi
+                sleep 10
               done
             fi
             
