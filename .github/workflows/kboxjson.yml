@@ -107,6 +107,8 @@ jobs:
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
+                else
+                  echo "$jsonhash"
                 fi
               done
             fi
