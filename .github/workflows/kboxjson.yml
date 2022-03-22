@@ -27,7 +27,7 @@ jobs:
         URLMK: ${{ secrets.URLMK }}
         
       run: |
-        UA='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36';
+        UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.46';
         [ -d fmlist ] || mkdir fmlist
         [ -d fmsongs ] || mkdir fmsongs
         [ -d songinfo ] || mkdir songinfo
@@ -108,7 +108,7 @@ jobs:
                     rm -f "$filehash"
                   fi
                 fi
-                jsonhash=$(curl -v "$urlhash$hash" --referer https://m.kugou.com -A "$UA" --socks5 116.24.103.44:51080)
+                jsonhash=$(curl -v "$urlhash$hash" -A "$UA" --socks5 116.24.103.44:51080)
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
