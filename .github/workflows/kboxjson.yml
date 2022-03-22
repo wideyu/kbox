@@ -25,6 +25,7 @@ jobs:
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         URLMK: ${{ secrets.URLMK }}
+        SOCKS5: ${{ secrets.SOCKS5 }}
         
       run: |
         UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.46';
@@ -108,7 +109,7 @@ jobs:
                     rm -f "$filehash"
                   fi
                 fi
-                jsonhash=$(curl -s "$urlhash$hash" -A "$UA" --socks5 116.24.103.44:10086)
+                jsonhash=$(curl -v "$urlhash$hash" -A "$UA" --proxy "socks5://$SOCKS5:$SOCKS5@wideyu.f3322.net:10086)
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
