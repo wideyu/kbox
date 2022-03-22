@@ -27,7 +27,7 @@ jobs:
         URLMK: ${{ secrets.URLMK }}
         
       run: |
-        UA='Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12A365 MicroMessenger/6.0 NetType/WIFI';
+        UA='Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36';
         [ -d fmlist ] || mkdir fmlist
         [ -d fmsongs ] || mkdir fmsongs
         [ -d songinfo ] || mkdir songinfo
