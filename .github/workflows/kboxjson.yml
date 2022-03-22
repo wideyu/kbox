@@ -2,7 +2,7 @@ name: kboxjson
 on: 
   push:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '* */1 * * *'
   workflow_dispatch:
     
 jobs:
