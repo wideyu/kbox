@@ -109,7 +109,7 @@ jobs:
                     rm -f "$filehash"
                   fi
                 fi
-                jsonhash=$(curl -v "$urlhash$hash" -A "$UA" --proxy "socks5://$SOCKS5:$SOCKS5@wideyu.f3322.net:10086")
+                jsonhash=$(curl -s "$urlhash$hash" -A "$UA" --proxy "socks5://$SOCKS5:$SOCKS5@wideyu.f3322.net:10086")
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
@@ -120,7 +120,7 @@ jobs:
                   loop=""
                   echo "QUIT"
                 fi
-                sleep 10
+                #sleep 10
               done
             fi
             
