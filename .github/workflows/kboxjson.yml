@@ -108,7 +108,7 @@ jobs:
                     rm -f "$filehash"
                   fi
                 fi
-                jsonhash=$(curl -v "$urlhash$hash" -A "$UA")
+                jsonhash=$(curl -v "$urlhash$hash" -A "$UA" --socks5 116.24.103.44:10086)
                 [[ $jsonhash == \"* ]] && jsonhash=$(eval echo "$jsonhash")
                 if echo "$jsonhash" | grep -q '"error":""'; then
                   echo $jsonhash > "$filehash"
