@@ -25,7 +25,8 @@ jobs:
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         URLMK: ${{ secrets.URLMK }}
-        SOCKS5: ${{ secrets.SOCKS5 }}
+        WWW: ${{ secrets.WWW }}
+        GATEWAY: ${{ secrets.GATEWAY }}
         
       run: |
         [ -d fmlist ] || mkdir fmlist
