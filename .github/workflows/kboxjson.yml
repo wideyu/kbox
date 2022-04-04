@@ -83,10 +83,10 @@ jobs:
             main="def main():
               import sys, json
               fmsongs=json.load(sys.stdin)
-              if fmsongs['data'][0]['songs'] is None:
+              if fmsongs['data']['songlist'] is None:
                 print("0")
               else:
-                print(len(fmsongs['data'][0]['songs']))"
+                print(len(fmsongs['data']['songlist']))"
             py=$(echo -e "$main\nmain()")
             lensongs=$(echo "$jsonsongs" | python3 -c "$py")
             echo "$lensongs"
