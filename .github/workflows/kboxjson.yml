@@ -28,6 +28,30 @@ jobs:
         SOCKS5: ${{ secrets.SOCKS5 }}
         
       run: |
+        [ -d fmlist ] || mkdir fmlist
+        pagesize=1
+        pageindex=1
+        urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex";
+        jsonlist=$(curl -s "$urllist")
+        [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
+        echo $urllist
+        echo $jsonlist
+        main="def main():
+          import sys, json
+          print(json.load(sys.stdin)['recordcount'])"
+        py=$(echo -e "$main\nmain()")
+        echo $py
+        pagesize=$(echo "$jsonlist" | python3 -c "$py")
+        echo $pagesize
+        urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex";
+        jsonlist=$(curl -s "$urllist")
+        [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
+        echo $jsonlist > "fmlist/$pageindex.json" 
+
+        urllist="$WWW/fmweb/html/index.html";
+        jsonlist=$(curl -s "$urllist"|grep 'var radioData ='|sed 's/^var radioData = /{"data":/;s/;$/}/');
+        echo $jsonlist > "fmlist.json";
+
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
         curl -k -o pixabay.json "${{ secrets.PIXABAY }}"
         if [ $? -eq 0 ]; then
