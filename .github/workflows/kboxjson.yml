@@ -94,7 +94,7 @@ jobs:
               [ -d "fmsongs/$fmid" ] && rm -rf "fmsongs/$fmid"
             else
               [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
-              filesongs="fmsongs/$fmid/$pageindex.json"
+              filesongs="fmsongs/$fmid/$offset.json"
               echo $jsonsongs > "$filesongs"
                 #if echo "$jsonhash" | grep -q '"error":"您操作太频繁了，请稍后再试"'; then
                 #  loop=""
