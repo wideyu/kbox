@@ -49,7 +49,7 @@ jobs:
         echo $jsonlist > "fmlist/$pageindex.json" 
 
         urllist="$WWW/fmweb/html/index.html";
-        jsonlist=$(curl -s "$urllist"|grep 'var radioData ='|sed 's/^var radioData = /{"data":/;s/;$/}/');
+        jsonlist=$(curl -v "$urllist"|grep 'var radioData ='|sed 's/^var radioData = /{"data":/;s/;$/}/');
         echo $jsonlist > "fmlist.json";
 
         curl -k -o bing.json "https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
