@@ -74,9 +74,9 @@ jobs:
             [ -z $loop ] && break
             #$URLMK/fmSongs.php?size=20&fmid=$fmid&offset=$offset
             if [ -z $"offset" ]; then
-              urlsongs="$GATEWAY/openapicdn/broadcast/v2/get_songlist?radio_id=73&offset=0&pagesize=20"
+              urlsongs="$GATEWAY/openapicdn/broadcast/v2/get_songlist?radio_id=$fmid&offset=0&pagesize=20"
             else
-              urlsongs="$GATEWAY/openapicdn/broadcast/v2/get_songlist?radio_id=73&offset=$offset&pagesize=20"
+              urlsongs="$GATEWAY/openapicdn/broadcast/v2/get_songlist?radio_id=$fmid&offset=$offset&pagesize=20"
             fi
             jsonsongs=$(curl -s "$urlsongs")
             [[ $jsonsongs == \"* ]] && jsonsongs=$(eval echo "$jsonsongs")
