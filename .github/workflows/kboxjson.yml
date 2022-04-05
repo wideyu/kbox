@@ -62,8 +62,6 @@ jobs:
         echo "$jsonlist" > "fmlist.json"
         #echo "$jsonlist"
 
-        [ -d fmsongs ] || mkdir fmsongs
-
         main="def main():
           import sys, json
           fmlist=json.load(sys.stdin)
@@ -88,12 +86,16 @@ jobs:
               #{"uid":"0","appid":"1005","clientver":"10259","mid":"283772038997640891902313795880766264264","clienttime":"1649143065","key":"291945d5873cd1cfd9e1c37c7e63b03b","ishq":0,"area_code":"1","data":[{"fmid":"11","singername":"轻音乐","fmtype":"2","offset":"","size":19}],"get_tracker":1}
               urlsongs="$FMSERVICERETRY/v1/app_song_list_offset"
               clienttime=$(date +%s)
-              postdata='{"appid":"1005","clientver":"10259","mid":"283772038997640891902313795880766264264","clienttime":"'$clienttime'","key":"24d3bf3d4c6fdd1834691aa355ddcf0d","data":[{"fmid":"5","fmtype":"2","offset":"0","size":20}]}'
+              postdata='{"appid":"1005","clientver":"10259","mid":"283772038997640891902313795880766264264","clienttime":"1649117508","key":"24d3bf3d4c6fdd1834691aa355ddcf0d","data":[{"fmid":"'$fmid'","fmtype":"2","offset":"'$offset'","size":20}]}'
               echo "$postdata"
-              #curl -v -X POST "$urlsongs" -H 'Content-Type: application/json' -d "'$postdata'"
-              curl -X POST "$urlsongs" -H 'Content-Type: application/json' -d "$postdata"
+              jsonsongs=$(curl -s -X POST "$urlsongs" -H 'Content-Type: application/json' -d "$postdata")
+              [[ $jsonsongs == \"* ]] && jsonsongs=$(eval echo "$jsonsongs")
+              if echo "$jsonsongs" | grep -q '"songs":\[{'; then
+                [ -d "fmserviceretry/$fmid" ] || mkdir -p "fmserviceretry/$fmid"
+                echo "$jsonsongs" > "fmserviceretry/$fmid/$offset.json"
+              fi
             }
-            #fmserviceretrySongs
+            fmserviceretrySongs &
             function gatewaySongs(){
             #$URLMK/fmSongs.php?size=20&fmid=$fmid&offset=$offset
             #offset=$(grep -o 'offset[^,]*\",' "$fsongs" |grep -o '%7B.*%7D')n
@@ -110,12 +112,9 @@ jobs:
             py=$(echo -e "$main\nmain()")
             lensongs=$(echo "$jsonsongs" | python3 -c "$py")
             echo "offset=$offset len=$lensongs"
-            if [ "$lensongs" == "0" ]; then
-              [ -d "fmsongs/$fmid" ] && rm -rf "fmsongs/$fmid"
-            else
-              [ -d "fmsongs/$fmid" ] || mkdir "fmsongs/$fmid"
-              filesongs="fmsongs/$fmid/$offset.json"
-              echo $jsonsongs > "$filesongs"
+            if [ "$lensongs" -gt "0" ]; then
+              [ -d "gateway/$fmid" ] || mkdir -p "gateway/$fmid"
+              echo $jsonsongs > "gateway/$fmid/$offset.json"
                 #if echo "$jsonhash" | grep -q '"error":"您操作太频繁了，请稍后再试"'; then
                 #  loop=""
                 #  echo "QUIT"
