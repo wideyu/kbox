@@ -24,6 +24,7 @@ jobs:
         URLMK: ${{ secrets.URLMK }}
         WWW: ${{ secrets.WWW }}
         GATEWAY: ${{ secrets.GATEWAY }}
+        FMSERVICERETRY: ${{ secrets.FMSERVICERETRY }}
         
       run: |
         function waitForJobs() {
@@ -87,7 +88,7 @@ jobs:
               clienttime=$(date +%s)
               postdata='{"appid":"1005","clientver":"10259","mid":"283772038997640891902313795880766264264","clienttime":"1649117508","key":"24d3bf3d4c6fdd1834691aa355ddcf0d","data":[{"fmid":"'$fmid'","fmtype":"2","offset":"'$offset'","size":20}]}'
               #echo "$postdata"
-              jsonsongs=$(curl -v -X POST "$urlsongs" -H 'Content-Type: application/json' -d "$postdata")
+              jsonsongs=$(curl -s -X POST "$urlsongs" -H 'Content-Type: application/json' -d "$postdata")
               [[ $jsonsongs == \"* ]] && jsonsongs=$(eval echo "$jsonsongs")
               if echo "$jsonsongs" | grep -q '"songs":\[{'; then
                 [ -d "fmserviceretry/$fmid" ] || mkdir -p "fmserviceretry/$fmid"
