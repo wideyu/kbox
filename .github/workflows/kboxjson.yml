@@ -76,7 +76,7 @@ jobs:
         for fmid in $(echo "$jsonlist" | python3 -c "$py")
         do
           [ -z $loop ] && break
-          waitForJobs 9
+          waitForJobs 22
           echo "fmid=$fmid"
           offset="0"
           for offset in {0..200..20}
