@@ -42,13 +42,11 @@ jobs:
         urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex";
         jsonlist=$(curl -s "$urllist")
         [[ $jsonlist == \"* ]] && jsonlist=$(eval echo "$jsonlist")
-        echo $urllist
-        echo $jsonlist
         main="def main():
           import sys, json
           print(json.load(sys.stdin)['recordcount'])"
         py=$(echo -e "$main\nmain()")
-        echo $py
+        #echo $py
         pagesize=$(echo "$jsonlist" | python3 -c "$py")
         echo $pagesize
         urllist="$URLMK/fmList.php?pagesize=$pagesize&pageindex=$pageindex"
@@ -57,7 +55,6 @@ jobs:
         
         echo $jsonlist > "fmlist/$pageindex.json" 
         urllist="$WWW/fmweb/html/index.html"
-        echo $urllist
         jsonlist=$(curl -s -4 "$urllist"|grep 'var radioData = '|sed 's/^var radioData = /{"data":/;s/;$/}/')
         echo "$jsonlist" > "fmlist.json"
         #echo "$jsonlist"
@@ -69,15 +66,17 @@ jobs:
             print(fm['fmid'])"
         py=$(echo -e "$main\nmain()")
         #echo "$jsonlist"
-        echo "$py"
+        #echo "$py"
         loop="YES"
+        count=0
         for fmid in $(echo "$jsonlist" | python3 -c "$py")
         do
           [ -z $loop ] && break
           waitForJobs 22
-          echo "fmid=$fmid"
+          count=$((count+1))
+          echo "fmid=$fmid $count/$pagesize"
           offset="0"
-          for offset in {0..200..20}
+          for offset in {0..500..20}
           do
             [ -z $loop ] && break
             function fmserviceretrySongs(){
@@ -87,7 +86,7 @@ jobs:
               urlsongs="$FMSERVICERETRY/v1/app_song_list_offset"
               clienttime=$(date +%s)
               postdata='{"appid":"1005","clientver":"10259","mid":"283772038997640891902313795880766264264","clienttime":"1649117508","key":"24d3bf3d4c6fdd1834691aa355ddcf0d","data":[{"fmid":"'$fmid'","fmtype":"2","offset":"'$offset'","size":20}]}'
-              echo "$postdata"
+              #echo "$postdata"
               jsonsongs=$(curl -s -X POST "$urlsongs" -H 'Content-Type: application/json' -d "$postdata")
               [[ $jsonsongs == \"* ]] && jsonsongs=$(eval echo "$jsonsongs")
               if echo "$jsonsongs" | grep -q '"songs":\[{'; then
@@ -111,7 +110,7 @@ jobs:
                 print(len(fmsongs['data']['songlist']))"
             py=$(echo -e "$main\nmain()")
             lensongs=$(echo "$jsonsongs" | python3 -c "$py")
-            echo "offset=$offset len=$lensongs"
+            #echo "offset=$offset len=$lensongs"
             if [ "$lensongs" -gt "0" ]; then
               [ -d "gateway/$fmid" ] || mkdir -p "gateway/$fmid"
               echo $jsonsongs > "gateway/$fmid/$offset.json"
