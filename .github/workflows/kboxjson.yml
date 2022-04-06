@@ -79,7 +79,7 @@ jobs:
           count=$((count+1))
           echo "fmid=$fmid $count/$pagesize"
           offset="0"
-          for offset in {0..500..20}
+          for offset in {0..600..20}
           do
             [ -z $loop ] && break
             function fmserviceretrySongs(){
