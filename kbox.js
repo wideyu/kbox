@@ -134,7 +134,7 @@ function fetchSongs(f) {
     } if (offsets == '') {
         var d = new Date();
         //offsets = '%7B%22offset%22%3A0%2C%22time%22%3A' + Math.round(d.getTime() / 1000 - 3600) + '%7D'；
-        offsets = '0'
+        offsets = Math.floor(Math.random() * 30) * 20
     }
     var g = fmSongs;
     g += f;
@@ -145,6 +145,9 @@ function fetchSongs(f) {
         return a.json()
     }).then(function(c) {
         offsets = c.data.offset;
+        if (offsets > 600) {
+            offsets = 0;
+        }
         var d = 0;
         if (c.data.songlist) {
             d = c.data.songlist.length
