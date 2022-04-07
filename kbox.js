@@ -110,7 +110,7 @@ return js;
 
 function getJsonp(url, handle) {
 //creating random name of function as to not conflict with others
-var func = 'jQuery' + Math.floor((Math.random() * 1000000000000000000) + 1);
+var func = 'jQuery' + Math.floor((Math.random()+1) * 10000000000000000) + '_' + (new Date().getTime());
 //adding randomly created function to global window object
 window[func] = function (data) {
 //calling handle
