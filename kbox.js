@@ -101,7 +101,7 @@ function Guid() {
             return (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
         }
         return e() + e() + "-" + e() + "-" + e() + "-" + e() + "-" + e() + e() + e()
-    },
+    }
 function Md5(e) {
         var t, n = 0, o = 8;
         function a(e, t, r, i, n, o) {
