@@ -94,8 +94,8 @@ var offsets = '';
 var fmSongs = 'gateway/'; 
 //https://bird.ioliu.cn/v2?url=http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=';
 //https://wwwapi.kugou.com/yy/index.php?r=play/getdata&callback=jQuery191011037639385629427_1649061322663&hash=32856ED5E34CFE975149EAD254A38528&dfid=3Mo1bY2loDLO0nZk3z3qbCYO&appid=1014&mid=c1743ffb0d6248ac82fffc6899d7f282&platid=4&album_id=964178&album_audio_id=32077008&_=1649061322668
-var getSong = 'https://wwwapi.kugou.com/yy/index.php?r=play/getdata&appid=1014&platid=4';
-getSong += '&dfid=' + (Math.random().toString(36).substr(2)+Math.random().toString(36).substr(2)+Math.random().toString(36).substr(2)).substr(0,24);
+var getSong = 'https://wwwapi.kugou.com/yy/index.php?r=play/getdata';//&appid=1014&platid=4';
+//getSong += '&dfid=' + (Math.random().toString(36).substr(2)+Math.random().toString(36).substr(2)+Math.random().toString(36).substr(2)).substr(0,24);
 function Guid() {
         function e() {
             return (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
