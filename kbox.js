@@ -244,7 +244,7 @@ function fetchSongs(f) {
     if (!f) {
         var f = localStorage.getItem("songsID");
         if (f == null) {
-            f = 343
+            f = 63
         }
     } else {
         if (f != localStorage.getItem("songsID")) {
