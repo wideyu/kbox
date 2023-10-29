@@ -138,8 +138,8 @@ jobs:
         fi
         curl -k -o vladstudio.json "https://vlad.studio/api/v3/art/?client=${{ secrets.VLADSTUDIO }}&format=json&has_wall=1&limit=600"
         if [ $? -eq 0 ]; then
-          sed -i 's|api\\\/v3\\\/download?client=.\{24\}&filename|ajax-download-wallpaper-image\\\/?filename|g' vladstudio.json
-          sed -i 's|\&size=1600x1200|\&size=1920x1080|g' vladstudio.json
+          sed -i 's|api\\\/v3\\\/download?client=.\{24\}&filename=|wallpaper-image\\\/|g' vladstudio.json
+          sed -i 's|\&size=1280x800|\&size=1920x1080|g' vladstudio.json
         fi
         curl -k -o unsplash.json "${{ secrets.UNSPLASH }}1"
         if [ $? -eq 0 ]; then
